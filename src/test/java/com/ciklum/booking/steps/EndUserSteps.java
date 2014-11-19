@@ -1,12 +1,18 @@
 package com.ciklum.booking.steps;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import com.ciklum.booking.pages.BookingPage;
+import com.ciklum.booking.pages.FlightsPage;
+import com.ciklum.booking.pages.StartPage;
+import com.ciklum.booking.tools.RadioButton;
+import com.ciklum.booking.tools.Util;
 
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.steps.ScenarioSteps;
@@ -17,33 +23,34 @@ import static org.hamcrest.Matchers.hasItem;
 @SuppressWarnings("serial")
 public class EndUserSteps extends ScenarioSteps {
 
-    BookingPage bookingPage;
+    StartPage startPage;
+    FlightsPage flightsPage;
     
     Random random = new Random();
     
     @Step
     public void gotoWebHomepage() {
-    	bookingPage.open();
+    	startPage.open();
     }
     
     @Step
     public void chooseDepartureAirportFromDropdownList(String airport) {
-    	bookingPage.chooseDepartureAirport(airport);
+    	startPage.chooseDepartureAirport(airport);
     }
     
     @Step
     public void chooseArrivalAirportFromDropdownList(String airport) {
-    	bookingPage.chooseArrivalAirport(airport);
+    	startPage.chooseArrivalAirport(airport);
     }
 
     @Step
 	public void checkRoundtripRadioButton() {
-		bookingPage.checkRoundtripRadioButton();
+		startPage.checkRoundtripRadioButton();
 	}
 
     @Step
 	public void chooseAvailableDatesForOutboundAndInboundFlights() {
-    	List<String> available = bookingPage.getAvailableDatesForOutboundFlight();
+    	List<String> available = startPage.getAvailableDatesForOutboundFlight();
     	String randomAvailable = available.get(random.nextInt(available
     			.size() - 1));
     	chooseAvailableDateForOutboundFlight(randomAvailable);
@@ -53,27 +60,27 @@ public class EndUserSteps extends ScenarioSteps {
     
     @Step
     public void chooseAvailableDateForOutboundFlight(String outboundValue) {
-    	bookingPage.chooseDateForOutboundFlight(outboundValue);
+    	startPage.chooseDateForOutboundFlight(outboundValue);
     }
     
     @Step
     public void chooseAvailableDateForInboundFlight(String inboundValue) {
-    	bookingPage.chooseDateForInboundFlight(inboundValue);
+    	startPage.chooseDateForInboundFlight(inboundValue);
     }
     
     @Step
     public void chooseNumberOfAdultFromDropdownList(int adultNum) {
-    	bookingPage.chooseNumberOfAdult(adultNum);
+    	startPage.chooseNumberOfAdult(adultNum);
     }
     
     @Step
     public void chooseNumberOfChildFromDropdownList(int childNum) {
-    	bookingPage.chooseNumberOfChild(childNum);
+    	startPage.chooseNumberOfChild(childNum);
     }
     
     @Step
     public void chooseNumberOfInfantFromDropdownList(int infantNum) {
-    	bookingPage.chooseNumberOfInfant(infantNum);
+    	startPage.chooseNumberOfInfant(infantNum);
     }
     
 	@Step
@@ -86,17 +93,17 @@ public class EndUserSteps extends ScenarioSteps {
     
     @Step
     public void chooseSearchPeriodFromDropdownList(String period) {
-    	bookingPage.chooseSearchPeriod(period);
+    	startPage.chooseSearchPeriod(period);
     }
     
     @Step
     public void chooseCurrencyFromDropdownList(String currency) {
-    	bookingPage.chooseCurrency(currency);
+    	startPage.chooseCurrency(currency);
     }
     
 	@Step
 	public void chooseOneFromAvailableCurrency() {
-		chooseRandomDropdownItem(bookingPage.getCurrencyWebElement());
+		chooseRandomDropdownItem(startPage.getCurrencyWebElement());
 	}
     
 	private void chooseRandomDropdownItem(WebElement dropdown) {
@@ -108,8 +115,48 @@ public class EndUserSteps extends ScenarioSteps {
 
     @Step
     public void pressGoButton() {
-    	bookingPage.pressGoButton();
+    	startPage.pressGoButton();
     }
+    
+    @Step
+	public void chooseCheapestFareBasisForInboundAndOutboundFlights() {
+
+    	List<RadioButton> outButtons = flightsPage.getOutboundPriceRadioButtons();
+    	List<Integer> outPrices = new ArrayList<Integer>(outButtons.size());
+    	
+    	for (RadioButton rb : outButtons) {
+    		outPrices.add(Util.parseNumbersInString(rb.getLabel().getText()).get(0));
+    	}
+    	Integer outMin = Collections.min(outPrices);
+    	
+    	for (RadioButton rb : outButtons) {
+    		if (rb.getLabel().getText().contains(outMin.toString())) {
+    			rb.getInput().click();
+    			break;
+    		};
+    	}
+    	
+    	List<RadioButton> buttons = flightsPage.getInboundPriceRadioButtons();
+    	List<Integer> prices = new ArrayList<Integer>(buttons.size());
+    	
+    	for (RadioButton rb : buttons) {
+    		prices.add(Util.parseNumbersInString(rb.getLabel().getText()).get(0));
+    	}
+    	Integer min = Collections.min(prices);
+    	
+    	for (RadioButton rb : buttons) {
+    		if (rb.getLabel().getText().contains(min.toString())) {
+    			rb.getInput().click();
+    			break;
+    		};
+    	}
+    	
+	}
+
+    @Step
+	public void pressNext() {
+		flightsPage.pressNextButton();
+	}
 
 		
     	
@@ -122,7 +169,6 @@ public class EndUserSteps extends ScenarioSteps {
     public void should_see_definition(String definition) {
         assertThat(dictionaryPage.getDefinitions(), hasItem(containsString(definition)));
     }
-
 
     @Step
     public void looks_for(String term) {

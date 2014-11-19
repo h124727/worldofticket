@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 
+
 //import com.ciklum.booking.requirements.Application;
 import com.ciklum.booking.steps.EndUserSteps;
 
@@ -35,8 +36,8 @@ public class TicketReservationStoryTest {
 //    @Screenshots(afterEachStep=true)
     @Screenshots(onlyOnFailures=true)
     public void roundtripReservationShouldBeCreated() {
-        endUser.gotoWebHomepage();										// 1
-        endUser.chooseDepartureAirportFromDropdownList("Oslo, OSL");		// 2
+        endUser.gotoWebHomepage();											// 1
+        endUser.chooseDepartureAirportFromDropdownList("London, LHR");//"Oslo, OSL");		// 2
         endUser.chooseArrivalAirportFromDropdownList("Copenhagen, CPH");	// 3
         endUser.checkRoundtripRadioButton();								// 4
         endUser.chooseAvailableDatesForOutboundAndInboundFlights();			// 5
@@ -45,6 +46,31 @@ public class TicketReservationStoryTest {
         endUser.chooseOneFromAvailableCurrency();							// 8
         endUser.pressGoButton();                                            // 9
         
+        // ***
+    	try {
+    		System.out.println("*** Waiting for next page: 10 sec");
+    		Thread.sleep(10000);
+    	} catch (InterruptedException e) {
+    		e.printStackTrace();
+    	}
+    	// ***
+    	
+        endUser.chooseCheapestFareBasisForInboundAndOutboundFlights();		// 10
+    	try {
+    		System.out.println("*** Waiting before Next: 10 sec");
+    		Thread.sleep(10000);
+    	} catch (InterruptedException e) {
+    		e.printStackTrace();
+    	}
+        endUser.pressNext();												// 11
+        
+        // ***
+    	try {
+    		System.out.println("*** Waiting for exit: 20 sec");
+    		Thread.sleep(20000);
+    	} catch (InterruptedException e) {
+    		e.printStackTrace();
+    	}
     }
 //        endUser.should_see_definition("A common, round fruit produced by the tree Malus domestica, cultivated in temperate climates.");
 
