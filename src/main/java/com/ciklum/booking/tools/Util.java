@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 public class Util {
 
+	@SuppressWarnings("unchecked")
 	public static List<Integer> parseNumbersInString(String input) {
 		Pattern p = Pattern.compile("-?\\d+");
 		Matcher m = p.matcher(input);
@@ -16,6 +17,14 @@ public class Util {
 			l.add(Integer.parseInt(m.group()));
 		}
 		return l.isEmpty() ? Collections.EMPTY_LIST : l;
+	}
+	
+	public static void sleep(int sec) {
+		try {
+			Thread.sleep(sec * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
