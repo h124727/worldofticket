@@ -14,7 +14,7 @@ import org.openqa.selenium.WebElement;
 
 import com.ciklum.booking.tools.RadioButton;
 
-@DefaultUrl("http://staging.worldticket.net")
+//@DefaultUrl("http://staging.worldticket.net")
 public class FlightsPage extends PageObject {
 
 	@FindBy(css = "table.gwt-TabPanel.flight-search-page-item.flight-search-page-tab-panel")
@@ -25,6 +25,9 @@ public class FlightsPage extends PageObject {
 	
 	@FindBy(css = "button.gwt-Button.next-page-button")
 	private WebElementFacade _nextButton;
+	
+	@FindBy(css = "span.price.total-value")
+	private WebElementFacade _priceCalculatorTotalValue;
 	
 	@SuppressWarnings("unchecked")
 	public List<RadioButton> getOutboundPriceRadioButtons() {
@@ -46,5 +49,9 @@ public class FlightsPage extends PageObject {
 
 	public void pressNextButton() {
 		_nextButton.click();
+	}
+	
+	public String getTotalPriceValue() {
+		return _priceCalculatorTotalValue.getText();
 	}
 }

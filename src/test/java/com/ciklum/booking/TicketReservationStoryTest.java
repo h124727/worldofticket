@@ -3,7 +3,6 @@ package com.ciklum.booking;
 import net.thucydides.core.annotations.ManagedPages;
 import net.thucydides.core.annotations.Pending;
 import net.thucydides.core.annotations.Screenshots;
-import net.thucydides.core.annotations.Step;
 import net.thucydides.core.annotations.Steps;
 import net.thucydides.core.annotations.Story;
 import net.thucydides.core.pages.Pages;
@@ -14,12 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
-
-
-//import com.ciklum.booking.requirements.Application;
+import com.ciklum.booking.requirements.Application;
 import com.ciklum.booking.steps.EndUserSteps;
+import com.ciklum.booking.tools.Util;
 
-//@Story(Application.Booking.TicketReservation.class)
+@Story(Application.Booking.TicketReservation.class)
 @RunWith(ThucydidesRunner.class)
 public class TicketReservationStoryTest {
 
@@ -33,7 +31,6 @@ public class TicketReservationStoryTest {
     public EndUserSteps endUser;
 
     @Test
-//    @Screenshots(afterEachStep=true)
     @Screenshots(onlyOnFailures=true)
     public void roundtripReservationShouldBeCreated() {
         endUser.gotoWebHomepage();											// 1
@@ -45,36 +42,14 @@ public class TicketReservationStoryTest {
         endUser.chooseSearchPeriodFromDropdownList("Exact date");           // 7
         endUser.chooseOneFromAvailableCurrency();							// 8
         endUser.pressGoButton();                                            // 9
-        
-        // ***
-    	try {
-    		System.out.println("*** Waiting for next page: 10 sec");
-    		Thread.sleep(10000);
-    	} catch (InterruptedException e) {
-    		e.printStackTrace();
-    	}
-    	// ***
-    	
+        // *** next page ***
         endUser.chooseCheapestFareBasisForInboundAndOutboundFlights();		// 10
-    	try {
-    		System.out.println("*** Waiting before Next: 10 sec");
-    		Thread.sleep(10000);
-    	} catch (InterruptedException e) {
-    		e.printStackTrace();
-    	}
+//        Util.sleep(10, "before Next");
         endUser.pressNext();												// 11
         
         // ***
-    	try {
-    		System.out.println("*** Waiting for exit: 20 sec");
-    		Thread.sleep(20000);
-    	} catch (InterruptedException e) {
-    		e.printStackTrace();
-    	}
+        Util.sleep(5, "for exit");
     }
-//        endUser.should_see_definition("A common, round fruit produced by the tree Malus domestica, cultivated in temperate climates.");
-
-    
 
     @Pending @Test
     public void onewayReservationShouldBeCreated() {

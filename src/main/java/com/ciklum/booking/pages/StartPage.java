@@ -3,6 +3,7 @@ package com.ciklum.booking.pages;
 import net.thucydides.core.annotations.DefaultUrl;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import net.thucydides.core.pages.WebElementFacade;
@@ -11,6 +12,7 @@ import net.thucydides.core.pages.PageObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @DefaultUrl("http://staging.worldticket.net")
 public class StartPage extends PageObject {
@@ -47,6 +49,13 @@ public class StartPage extends PageObject {
 	
 	@FindBy(css="a.gwt-Anchor.go-button")
 	private WebElementFacade _goButton;
+	
+	public StartPage(WebDriver driver) {
+		super(driver);
+		driver.manage().window().maximize();
+		driver.manage().timeouts().setScriptTimeout(90, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+	}
 
 	public WebElementFacade getCurrencyWebElement() {
 		return _currency;
@@ -73,7 +82,6 @@ public class StartPage extends PageObject {
 		for (WebElement cell : availableCells) {
 			available.add(cell.getText());
 		}
-		
 		return available;
 	}
 

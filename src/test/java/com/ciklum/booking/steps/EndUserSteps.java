@@ -1,7 +1,6 @@
 package com.ciklum.booking.steps;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -14,11 +13,12 @@ import com.ciklum.booking.pages.StartPage;
 import com.ciklum.booking.tools.RadioButton;
 import com.ciklum.booking.tools.Util;
 
+import net.thucydides.core.SessionMap;
+import net.thucydides.core.Thucydides;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.steps.ScenarioSteps;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("serial")
 public class EndUserSteps extends ScenarioSteps {
@@ -89,6 +89,7 @@ public class EndUserSteps extends ScenarioSteps {
 		chooseNumberOfAdultFromDropdownList(adultNum);
 		chooseNumberOfChildFromDropdownList(childNum);
 		chooseNumberOfInfantFromDropdownList(infantNum);
+		storeNumberOfPassengersToSession(adultNum + childNum + infantNum);
 	}
     
     @Step
@@ -105,58 +106,80 @@ public class EndUserSteps extends ScenarioSteps {
 	public void chooseOneFromAvailableCurrency() {
 		chooseRandomDropdownItem(startPage.getCurrencyWebElement());
 	}
-    
-	private void chooseRandomDropdownItem(WebElement dropdown) {
-		Select select = new Select(dropdown);
-		List<WebElement> options = select.getOptions();
-		int randomItem = random.nextInt(options.size());
-		select.selectByIndex(randomItem);
-	}
 
     @Step
     public void pressGoButton() {
     	startPage.pressGoButton();
     }
     
-    @Step
+	@Step
 	public void chooseCheapestFareBasisForInboundAndOutboundFlights() {
-
-    	List<RadioButton> outButtons = flightsPage.getOutboundPriceRadioButtons();
-    	List<Integer> outPrices = new ArrayList<Integer>(outButtons.size());
-    	
-    	for (RadioButton rb : outButtons) {
-    		outPrices.add(Util.parseNumbersInString(rb.getLabel().getText()).get(0));
-    	}
-    	Integer outMin = Collections.min(outPrices);
-    	
-    	for (RadioButton rb : outButtons) {
-    		if (rb.getLabel().getText().contains(outMin.toString())) {
-    			rb.getInput().click();
-    			break;
-    		};
-    	}
-    	
-    	List<RadioButton> buttons = flightsPage.getInboundPriceRadioButtons();
-    	List<Integer> prices = new ArrayList<Integer>(buttons.size());
-    	
-    	for (RadioButton rb : buttons) {
-    		prices.add(Util.parseNumbersInString(rb.getLabel().getText()).get(0));
-    	}
-    	Integer min = Collections.min(prices);
-    	
-    	for (RadioButton rb : buttons) {
-    		if (rb.getLabel().getText().contains(min.toString())) {
-    			rb.getInput().click();
-    			break;
-    		};
-    	}
-    	
+		clickRadioButtonWithCheapestPrice(flightsPage.getOutboundPriceRadioButtons());
+		clickRadioButtonWithCheapestPrice(flightsPage.getInboundPriceRadioButtons());
+		priceCalculatorTotalShouldBeCorrect();
 	}
-
-    @Step
+    
+	@Step
+	@SuppressWarnings("unchecked")
+	public void priceCalculatorTotalShouldBeCorrect() {
+		Integer total = Integer.parseInt(flightsPage.getTotalPriceValue());
+		Integer sum = 0;
+		Integer numOfPassengers = ((Integer) Thucydides.getCurrentSession()
+				.get("numofpassengers"));
+		for (Integer price : ((List<Integer>) Thucydides.getCurrentSession()
+				.get("prices"))) {
+			sum += price * numOfPassengers;
+		}
+		// TODO delete following string, added for demo
+		sum++; // for demo
+		assertThat(total, is(sum));
+	}
+	
+	@Step
 	public void pressNext() {
 		flightsPage.pressNextButton();
 	}
+	
+	private void storeNumberOfPassengersToSession(int passengers) {
+		Thucydides.getCurrentSession().put("numofpassengers", passengers);
+	}
+    
+	private void clickRadioButtonWithCheapestPrice(List<RadioButton> buttons) {
+    	if (!buttons.isEmpty()) {
+    		List<Integer> prices = new ArrayList<Integer>(buttons.size());
+    		
+    		for (RadioButton rb : buttons) {
+    			prices.add(Util.parseNumbersInString(rb.getLabel().getText()).get(0));
+    		}
+    		Integer min = Collections.min(prices);
+    		
+    		for (RadioButton rb : buttons) {
+    			if (rb.getLabel().getText().contains(min.toString())) {
+    				rb.getInput().click();
+    				break;
+    			};
+    		}
+    		storePriceToSession(min);
+    	}
+    }
+	
+	private void chooseRandomDropdownItem(WebElement dropdown) {
+		Select select = new Select(dropdown);
+		List<WebElement> options = select.getOptions();
+		int randomItem = random.nextInt(options.size());
+		select.selectByIndex(randomItem);
+	}
+    
+	@SuppressWarnings("unchecked")
+	private void storePriceToSession(Integer price) {
+    	SessionMap<Object, Object> session = Thucydides.getCurrentSession();
+    	Object prices = session.get("prices");
+		if (prices == null) {
+			prices = new ArrayList<Integer>();
+			session.put("prices", prices);
+		}
+		((List<Integer>) prices).add(price);
+    }
 
 		
     	
