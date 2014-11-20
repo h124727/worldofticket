@@ -47,8 +47,6 @@ public class TicketReservationStoryTest {
 //        Util.sleep(10, "before Next");
         endUser.pressNext();												// 11
         
-        // ***
-        Util.sleep(5, "for exit");
     }
 
     @Pending @Test

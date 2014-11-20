@@ -74,15 +74,11 @@ public class StartPage extends PageObject {
 	}
 	
 	public List<String> getAvailableDatesForOutboundFlight() {
-		
-		List<WebElement> availableCells = getAvailableCellsInCalendar(_outboundCalendar);
-		
-		List<String> available = new ArrayList<String>(availableCells.size());
-		
-		for (WebElement cell : availableCells) {
-			available.add(cell.getText());
-		}
-		return available;
+		return getAvailableDatesForCalendar(_outboundCalendar);
+	}
+	
+	public List<String> getAvailableDatesForInboundFlight() {
+		return getAvailableDatesForCalendar(_inboundCalendar);
 	}
 
 	public void chooseDateForOutboundFlight(String outboundValue) {
@@ -117,6 +113,17 @@ public class StartPage extends PageObject {
 		_goButton.click();
 	}
 	
+	private List<String> getAvailableDatesForCalendar(WebElementFacade calendar) {
+		List<WebElement> availableCells = getAvailableCellsInCalendar(calendar);
+		
+		List<String> available = new ArrayList<String>(availableCells.size());
+		
+		for (WebElement cell : availableCells) {
+			available.add(cell.getText());
+		}
+		return available;
+	}
+	
 	private void clickCalendarCell(WebElementFacade calendar, String cellValue) {
 		List<WebElement> tds = getAvailableCellsInCalendar(calendar);
 		for (WebElement td : tds) {
@@ -133,7 +140,7 @@ public class StartPage extends PageObject {
 		List<WebElement> available = new ArrayList<WebElement>();
 		
 		for (WebElement td : tds) {
-			if (!td.getAttribute("class").contains("OutsideOfMonth")) {
+			if (td.getAttribute("class").contains("HasFlights")) {//"OutsideOfMonth")) {
 				available.add(td);
 			}
 		}

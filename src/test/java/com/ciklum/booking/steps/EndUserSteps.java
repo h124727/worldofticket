@@ -51,12 +51,19 @@ public class EndUserSteps extends ScenarioSteps {
     @Step
 	public void chooseAvailableDatesForOutboundAndInboundFlights() {
     	List<String> available = startPage.getAvailableDatesForOutboundFlight();
-    	String randomAvailable = available.get(random.nextInt(available
-    			.size() - 1));
-    	chooseAvailableDateForOutboundFlight(randomAvailable);
-		String inboundValue = Integer.toString(Integer.parseInt(randomAvailable) + 1);
-    	chooseAvailableDateForInboundFlight(inboundValue);
+    	String outboundDate = getRandom(available);
+    	chooseAvailableDateForOutboundFlight(outboundDate);
+		available = startPage.getAvailableDatesForInboundFlight();
+		String inboundDate = getRandom(available);
+		while (Integer.parseInt(inboundDate) < Integer.parseInt(outboundDate)) {
+			inboundDate = getRandom(available);
+		}
+    	chooseAvailableDateForInboundFlight(inboundDate);
 	}
+    
+    private String getRandom(List<String> list) {
+    	return list.get(random.nextInt(list.size()));
+    }
     
     @Step
     public void chooseAvailableDateForOutboundFlight(String outboundValue) {
