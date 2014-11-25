@@ -54,4 +54,5 @@ public class FlightsPage extends PageObject {
 	public String getTotalPriceValue() {
 		return _priceCalculatorTotalValue.getText();
 	}
+	
 }

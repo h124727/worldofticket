@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 import com.ciklum.booking.pages.FlightsPage;
+import com.ciklum.booking.pages.PassengersPage;
 import com.ciklum.booking.pages.StartPage;
 import com.ciklum.booking.tools.RadioButton;
 import com.ciklum.booking.tools.Util;
@@ -25,6 +26,7 @@ public class EndUserSteps extends ScenarioSteps {
 
     StartPage startPage;
     FlightsPage flightsPage;
+    PassengersPage passengersPage;
     
     Random random = new Random();
     
@@ -188,8 +190,78 @@ public class EndUserSteps extends ScenarioSteps {
 		((List<Integer>) prices).add(price);
     }
 
-		
-    	
+	@Step
+    public void chooseTitleOfAdultFromDropdownList(String adultTtl) {
+		passengersPage.chooseAdultTitle(adultTtl);
+    }	
+	
+	@Step
+    public void chooseTitleOfChildFromDropdownList(String childTtl) {
+		passengersPage.chooseChildTitle(childTtl);
+    }
+	
+	@Step
+    public void chooseTitleOfInfantFromDropdownList(String infantTtl) {
+		passengersPage.chooseInfantTitle(infantTtl);
+    }
+	
+	@Step
+    public void fillAdultFirstName(String adlt) {
+		passengersPage.enterAdultFirstName(adlt);
+    }
+	
+	@Step
+    public void fillAdultLastName(String adlt) {
+		passengersPage.enterAdultLastName(adlt);
+    }
+	
+	@Step
+    public void fillChildFirstName(String chld) {
+		passengersPage.enterChildFirstName(chld);
+    }
+	
+	@Step
+    public void fillChildLastName(String chld) {
+		passengersPage.enterChildLastName(chld);
+    }
+	
+	@Step
+    public void fillInfantFirstName(String inft) {
+		passengersPage.enterInfantFirstName(inft);
+    }
+	
+	@Step
+    public void fillInfantLastName(String inft) {
+		passengersPage.enterInfantLastName(inft);
+    }
+    
+	@Step
+    public void fillPassengersInformation(String adultTtl, String childTtl, String infantTtl,
+    		                              String adltFn, String adltLn, String chFn, String chLn,
+    		                              String infFn, String infLn) {
+		chooseTitleOfAdultFromDropdownList(adultTtl);
+	    chooseTitleOfChildFromDropdownList(childTtl);
+	    chooseTitleOfInfantFromDropdownList(infantTtl);
+        fillAdultFirstName(adltFn);
+        fillAdultLastName(adltLn);
+        fillChildFirstName(chFn);
+        fillChildLastName(chLn);
+        fillInfantFirstName(infFn);
+        fillInfantLastName(infLn);		
+    }
+	
+	@Step
+	public void pressCopyCheckbox(){
+		passengersPage.markCopyCheckBox();
+	}
+	
+	@Step
+	public void fillEmailAndMobile(String mail, String mobile){
+		passengersPage.enterEmail(mail);
+		passengersPage.enterMobile(mobile);
+	}
+	
+	
 /*    @Step
     public void enters(String keyword) {
         dictionaryPage.enter_keywords(keyword);

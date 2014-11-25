@@ -34,7 +34,7 @@ public class TicketReservationStoryTest {
     @Screenshots(onlyOnFailures=true)
     public void roundtripReservationShouldBeCreated() {
         endUser.gotoWebHomepage();											// 1
-        endUser.chooseDepartureAirportFromDropdownList("London, LHR");//"Oslo, OSL");		// 2
+        endUser.chooseDepartureAirportFromDropdownList("Barcelona, BCN");	// 2
         endUser.chooseArrivalAirportFromDropdownList("Copenhagen, CPH");	// 3
         endUser.checkRoundtripRadioButton();								// 4
         endUser.chooseAvailableDatesForOutboundAndInboundFlights();			// 5
@@ -43,9 +43,24 @@ public class TicketReservationStoryTest {
         endUser.chooseOneFromAvailableCurrency();							// 8
         endUser.pressGoButton();                                            // 9
         // *** next page ***
-        endUser.chooseCheapestFareBasisForInboundAndOutboundFlights();		// 10
-//        Util.sleep(10, "before Next");
+        //endUser.chooseCheapestFareBasisForInboundAndOutboundFlights();	// 10
+        Util.sleep(5, "before Next");
         endUser.pressNext();												// 11
+        // *** next page ***
+        endUser.fillPassengersInformation("Mr.", "Mrs.", "Mrs.", "Pavel", "Iakovenko",
+        		                           "Oksana", "Iakovenko", "Maria", "Iakovenko"); //12
+        /*endUser.chooseTitleOfAdultFromDropdownList("Mr.");
+        endUser.chooseTitleOfChildFromDropdownList("Mrs.");
+        endUser.chooseTitleOfInfantFromDropdownList("Mrs.");
+        endUser.fillAdultFirstName("Pavel");
+        endUser.fillAdultLastName("Iakovenko");
+        endUser.fillChildFirstName("Oksana");
+        endUser.fillChildLastName("Iakovenko");
+        endUser.fillInfantFirstName("Maria");
+        endUser.fillInfantLastName("Iakovenko");*/
+        endUser.pressCopyCheckbox();                                          //13
+        endUser.fillEmailAndMobile("ypp@ukr.net", "80991234567");   		  //14
+        
         
     }
 
